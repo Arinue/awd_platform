@@ -4,8 +4,8 @@
 
 一个awd攻防比赛的裁判平台。
 
-版本：beta v1.0
-开发语言：python + django
+版本：beta v2.0
+开发语言：python3 + django
 
 
 平台分为两个部分
@@ -22,7 +22,7 @@
 
 
 ### 裁判机
-1. 安装所需环境 裁判机：python+django
+1. 安装所需环境 裁判机：python3+django
 2. 全局搜索woshiguanliyuan，并修改为随机字符串，此处为管理平台地址
 
 /untitled/urls.py
@@ -34,6 +34,8 @@
 /app/views.py
 ``` python
     if 'woshiguanliyuan' not in request.META['HTTP_REFERER']:
+    第31和47换为你的目录
+    列：("/var/www/awd_platform/app/qwe.txt","a")
 ```
 
 3. 修改app/management/commands/init.py，添加用户
@@ -56,9 +58,9 @@ user=[
 
 ```shell
 
-python manage.py init
+python3 manage.py init
 
-python manage.py manage.py runserver --insecure
+python3 manage.py manage.py runserver --insecure
 
 ```
 ### 靶机
@@ -73,32 +75,38 @@ import requests
 import time
 import random
 import string
+import hashlib
 
-#admin的token值，请务必修改复杂一点
-token='woshiadmin'
-
-# baji的token值
+token='woshiwuxudong'
+# 红队
 baji='311F8A54SV9K6B5FF4EAB20536'
 def getFlag():
-	return ''.join(random.sample(string.ascii_letters + string.digits, 48))
+	#return ''.join(random.sample(string.ascii_letters + string.digits, 48))
+	
+	m = hashlib.md5(''.join(random.sample(string.ascii_letters + string.digits, 48)).encode(encoding="utf-8")).hexdigest()
+	return m
+
 
 while(1):
-	f=open('./flag','w')
+	f=open('/flag','w')
 	flag=getFlag()
 	f.write(flag)
-    f.close()
 	data={
 	'flag':flag,
 	'token':token,
 	'baji':baji,
 	}
-	r=requests.post('http://192.168.1.100/caipanflag/',data=data)
+	r=requests.post('http://127.0.0.1/caipanflag/',data=data)
+     
 	print(r.text)
+	f.close()
 	time.sleep(300)
 
 ```
 
 ## 重要须知
 
-最后，由于项目比较急，所以存在好多问题，勉强可以用。不建议大家使用！
-数据库这一块，真的自己也很无奈，后期肯定会大改，这个只是一个beta版。后期会逐渐优化。
+更新作者基础上：
+1.增加flag验证一次性失效性，使得每个用户都可以提交一次flag
+2.增加排名情况
+3.flag改为MD5
