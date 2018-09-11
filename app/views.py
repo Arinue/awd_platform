@@ -28,7 +28,7 @@ def index(request):
         # 判断是否正确用户
         score_now=0
         s = (request.POST['token']+request.POST['flag'])       
-        f = open("/var/www/awd_platform/app/qwe.txt","a")
+        f = open("/var/www/awd_platform/app/token+flag.txt","a")
         f.write(s+" ")
         f.close
 
@@ -44,18 +44,28 @@ def index(request):
                     #Flag.objects.filter(flag_num=request.POST['flag']).update(create_time='2018-04-20 16:39:05')
                 else:
                     log = -2
-                with (open('/var/www/awd_platform/app/qwe.txt', 'r')) as text:
+                with (open('/var/www/awd_platform/app/token+flag.txt', 'r')) as text:
                     words = text.read()
-                n = words.count(s)
-                if n<1:
+                m = words.count(s)
+                flag = request.POST['flag']
+                n = words.count(flag)
+                if m<1:
                     
                     if log==1:
                         score_now = 100
                     elif log == -4:
-                        score_now = -100
+                        score_now = 0
 
                     fraction = Score.objects.filter(flag_num=request.POST['token'])[0].fraction + score_now
                     Score.objects.filter(flag_num=request.POST['token']).update(fraction=fraction)
+                    if n<1:
+                        fraction = Score.objects.filter(flag_num=Flag.objects.filter(flag_num=request.POST['flag'])[0].target_num)[0].fraction -100
+                        Score.objects.filter(flag_num=Flag.objects.filter(flag_num=request.POST['flag'])[0].target_num).update(fraction=fraction)
+                    Logs(
+                     player_num='服务器被攻陷',
+                     flag_num=Flag.objects.filter(flag_num=request.POST['flag'])[0].target_num,
+                     result=-100
+                    ).save()
                     print(score_now)
                 else:
                     log=-2
@@ -66,6 +76,7 @@ def index(request):
                 flag_num=request.POST['flag'],
                 result=score_now
             ).save()
+
         else:
             log = -1
         if log == -1:
@@ -77,7 +88,7 @@ def index(request):
         elif log == -2:
             message = "warning", "flag过期啦！再去拿一个吧！"
         elif log == -4:
-            message = "warning", "亲，恭喜你，成功的交了自己的flag！被扣除100分哦。"
+            message = "warning", "亲，恭喜你，成功的交了自己的flag！"
     return render(request, 'index.html', {'message': message, 'mess': None, 'backimg': random.randint(0, 16)})
 
 
@@ -99,16 +110,18 @@ def api1(request):
     htm = sorted(dict2list(html), key=lambda x:x[1], reverse=True) # 按照第1个元素降序排列
     j = 1
     for i in htm:
-        htmls += "<tr><td>{}</td><td>{}</td><td>{}</td></tr>".format(str(j)+" - "+i[0],i[1][0],i[1][1])
+        t = str(j)+"&emsp;&emsp;&emsp;"
+        htmls += "<tr><td>{}</td><td>{}</td><td>{}</td></tr>".format('&ensp;'+t+i[0],'&ensp;'+str(i[1][0]),i[1][1])
         j += 1   
     return HttpResponse(htmls)
+
 
 
 def api2(request):
     html = ''
     if 'Arinue' not in request.META['HTTP_REFERER']:
         for i in Logs.objects.filter(Q(result=100) | Q(result=-100))[::-1][0:10]:
-            if '宕机' in i.player_num:
+            if '宕机'and '攻陷' in i.player_num:
                 be_hacked=Status.objects.filter(target_num=i.flag_num)[0].player_num
             else:
                 be_hacked=Status.objects.filter(target_num=Flag.objects.filter(flag_num=i.flag_num)[0].target_num)[0].player_num
@@ -128,7 +141,6 @@ def api2(request):
                 i.result
             )
     return HttpResponse(html)
-
 
 def api3(request):
     html = ''
@@ -169,9 +181,9 @@ def api4(request):
                 flag_num=target_num,
                 result= -100
             ).save()
+
         return HttpResponse('The flag is received!')
     return HttpResponseNotFound
-
 def admin(request):
     message = ['success', '欢迎管理大大的到来']
     if request.POST:
