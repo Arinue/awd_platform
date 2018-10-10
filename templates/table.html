@@ -13,8 +13,8 @@
     <style rel="stylesheet">
         .ui.compact.table td {
             font-size: 1em;
-            padding-top: 0.2em;
-            padding-bottom: 0.2em;
+            padding-top: 0.1em;
+            padding-bottom: 0.1em;
             color: #000;
         }
     </style>
@@ -35,11 +35,67 @@
             <div class="container-fluid">
                 <div class="row justify-content-center">
                     <div class="col-lg-8">
-                        <div class="card" style="margin-top: 30px;opacity: .93;">
-                            <table class="ui red compact table"><h3
-                                    style="-ms-text-align-last: center;text-align-last: center;: center;">得分情况</h3>
+<h1><font face="verdana" color="#3CF070">距离比赛结束还有:</font></h1>
+<style>  
+*{ margin:0; padding:0; list-style:none;}  
+body{ font-size:18px; text-align:center;}  
+.time{ font-size:50px;color:red;height:30px; padding:0px;} 
+table tbody {
+        display: block;
+        height: 270px;
+        overflow-y: scroll;
+             }            
+table thead,
+tbody tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+            }
+/*关键设置：滚动条默认宽度是16px 将thead的宽度减16px*/
+table thead {
+        width: calc( 100% - 1em)
+             }
+</style>
+<body>  
+    <div class="time">  
+        <span id="t_d">比</span>  
+        <span id="t_h">赛</span>  
+        <span id="t_m">结</span>  
+        <span id="t_s">束</span>  
+    <span id="daoqi"></span>  
+    </div>  
+  
+  
+  
+<script>  
+   function GetRTime(){  
+       var EndTime= new Date('{{Year}}/{{month}}/{{day}} {{Hour}}:{{Minute}}:{{Second}}');
+       var NowTime = new Date(); 
+       var t =EndTime.getTime() - NowTime.getTime(); 
+       var d=Math.floor(t/1000/60/60/24);  
+       var h=Math.floor(t/1000/60/60%24);  
+       var m=Math.floor(t/1000/60%60);  
+       var s=Math.floor(t/1000%60);  
+       if(s>="0" && m>="0" && h>="0" && d>="0"){
+       document.getElementById("t_d").innerHTML = d + "";  
+       document.getElementById("t_h").innerHTML = h + ":";  
+       document.getElementById("t_m").innerHTML = m + ":";  
+       document.getElementById("t_s").innerHTML = s + "";  }
+       if(s=="0" && m=="0" && h=="0" && d=="0"){ 
+       document.getElementById("t_d").innerHTML =  "";  
+       document.getElementById("t_h").innerHTML =  "";  
+       document.getElementById("t_m").innerHTML =  "";  
+       document.getElementById("t_s").innerHTML =  "";
+       document.getElementById("daoqi").innerHTML ="比赛已结束";//这里设置到期时间后的提醒内容  
+       document.getElementById("daoqi").style.color="red";}  
+}  
+   setInterval(GetRTime,0);  
+</script>
+                        <div class="card" style="margin-top: 10px;opacity: .80;">
+                            <table class="ui red compact table">得分情况
                                 <thead>
                                 <tr>
+                                    <th>队伍排名</th>
                                     <th>队伍名称</th>
                                     <th>队伍得分</th>
                                     <th>靶机状态</th>
@@ -59,9 +115,8 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="card" style="margin-top: 30px;opacity: .93;">
-                            <table class="ui teal compact table"><h3
-                                    style="-ms-text-align-last: center;text-align-last: center;: center;">状态日志</h3>
+                        <div class="card" style="margin-top: 10px;opacity: .80;">
+                            <table class="ui teal compact table">状态日志
                                 <thead>
                                 <tr>
                                     <th>攻击队伍</th>

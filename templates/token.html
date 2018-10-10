@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}排行榜{% endblock %}
+{% block title %}队伍token{% endblock %}
 
 {% block style %}
     <!-- Bootstrap Core CSS -->
@@ -13,26 +13,10 @@
     <style rel="stylesheet">
         .ui.compact.table td {
             font-size: 1em;
-            padding-top: 0.1em;
-            padding-bottom: 0.1em;
+            padding-top: 0.2em;
+            padding-bottom: 0.2em;
             color: #000;
         }
-body{ font-size:18px; text-align:center;} 
-table tbody {
-        display: block;
-        height: 200px;
-        overflow-y: scroll;
-            }             
-table thead,
-tbody tr {
-        display: table;
-        width: 100%;
-        table-layout: fixed;
-            }
-/*关键设置：滚动条默认宽度是16px 将thead的宽度减16px*/
-table thead {
-        width: calc( 100% - 1em)
-             }
     </style>
 {% endblock %}
 
@@ -51,43 +35,28 @@ table thead {
             <div class="container-fluid">
                 <div class="row justify-content-center">
                     <div class="col-lg-8">
-                        <div class="card" style="margin-top: 00px;opacity: .70;">
-                            <table class="ui red compact table">得分情况
+
+                        <div class="card" style="margin-top: 30px;opacity: .70;">
+                            <table class="ui red compact table"><h3
+                                    style="-ms-text-align-last: center;text-align-last: center;: center;">Tokens</h3>
                                 <thead>
                                 <tr>
-                                    <th>排行&emsp;&emsp;队伍名称</th>
-                                    <th>队伍得分</th>
+                                    <th>队伍名称</th>
+                                    <th>队队token</th>
                                     <th>靶机状态</th>
                                 </tr>
                                 </thead>
                                 <tbody id="tab1">
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="card" style="margin-top: 0px;opacity: .70;">
-                            <table class="ui teal compact table">状态日志
-                                <thead>
                                 <tr>
-                                    <th>攻击队伍</th>
-                                    <th>被攻击队伍</th>
-                                    <th>攻击时间</th>
-                                    <th>攻击得分</th>
+                                    <td>蘋果</td>
+                                    <td>200</td>
+                                    <td>0 克</td>
                                 </tr>
-                                </thead>
-                                <tbody id="tab2">
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="card" style="margin-top: 0px;opacity: .70;">
-                            <table class="ui teal compact table">状态日志
-                                <thead>
                                 <tr>
-                                    <th>靶机编号</th>
-                                    <th>靶机flag</th>
-                                    <th>flag 是否有效</th>
+                                    <td>Orange</td>
+                                    <td>310</td>
+                                    <td>0 克</td>
                                 </tr>
-                                </thead>
-                                <tbody id="tab3">
                                 </tbody>
                             </table>
                         </div>
@@ -113,20 +82,15 @@ table thead {
     </body>
     <script>
         function reload(url, tableid) {
-            temp = $.ajax({url: url, async: false});
-            console.log(temp);
-            h1 = temp.responseText;
+            h1 = $.ajax({url: url, async: false}).responseText;
             $('#'+tableid).html(h1);
+            console.log(h1);
         }
 
 
         $(document).ready(function () {
-            reload('/api1/','tab1');
-            reload('/api2/','tab2');
-            reload('/api3/','tab3');
-            setInterval("reload('/api1/','tab1')", 50000);
-            setInterval("reload('/api2/','tab2')", 50000);
-            setInterval("reload('/api3/','tab3')", 100000);
+            reload('/api5/','tab1');
+            setInterval("reload('/api5/','tab1')", 500000);
             //setTimeout(function(){AutoReload();}, 1000);
         });
     </script>
