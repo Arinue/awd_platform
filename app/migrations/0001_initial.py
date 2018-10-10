@@ -21,6 +21,14 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='Flags',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('player_num', models.CharField(max_length=50)),
+                ('flag_num', models.CharField(max_length=50)),
+            ],
+        ),
+        migrations.CreateModel(
             name='Logs',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),

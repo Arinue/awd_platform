@@ -1,6 +1,4 @@
 from django.db import models
-
-
 # Create your models here.
 
 class Flag(models.Model):
@@ -11,6 +9,12 @@ class Flag(models.Model):
     flag_num = models.CharField(max_length=50)
     create_time = models.DateTimeField(auto_now_add=True)
 
+class Flags(models.Model):
+    """
+    选手编号，提交flag，flag入库时间，flag失效时间
+    """
+    player_num = models.CharField(max_length=50)
+    flag_num = models.CharField(max_length=50)
 
 class Score(models.Model):
     """
